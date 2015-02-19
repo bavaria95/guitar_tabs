@@ -1,0 +1,74 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <style>
+      body {
+        margin: 0px;
+        padding: 0px;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="myCanvas" width="578" height="200"></canvas>
+    <script>
+      window.requestAnimFrame = (function(callback) {
+        return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame ||
+        function(callback) {
+          window.setTimeout(callback, 1000 / 60);
+        };
+      })();
+
+      function drawCurve(myCurve, ctx) {
+        ctx.beginPath();
+        ctx.moveTo(myCurve.start_x, myCurve.start_y);
+        ctx.quadraticCurveTo(myCurve.control_x, myCurve.control_y, myCurve.end_x, myCurve.end_y);
+        ctx.stroke();
+      }
+
+      function animate(myCurve, canvas, context, startTime) {
+        // update
+        var time = (new Date()).getTime() - startTime;
+
+        var linearSpeed = 0.5;
+        // pixels / second
+        // var newX = linearSpeed * time / 1000;
+
+        var dy = linearSpeed * time / 1000 * myCurve.sign;
+        if ((myCurve.control_y + dy > (myCurve.start_y + 70) && myCurve.sign == 1) || (myCurve.control_y + dy < (myCurve.start_y - 70) && myCurve.sign == -1))
+
+        	myCurve.sign *= -1;
+          myCurve.control_y += dy;
+
+        // clear
+        context.clearRect(0, 0, canvas.width, canvas.height);
+
+        drawCurve(myCurve, context);
+
+        // request new frame
+        requestAnimFrame(function() {
+          animate(myCurve, canvas, context, startTime);
+        });
+      }
+      var canvas = document.getElementById('myCanvas');
+      var context = canvas.getContext('2d');
+
+      var myCurve = {
+        start_x: 10,
+        start_y: 100,
+        control_x: 210,
+        control_y: 115,
+        end_x: 410,
+        end_y: 100,
+        sign: 1
+      };
+
+      drawCurve(myCurve, context);
+
+      // wait one second before starting animation
+      setTimeout(function() {
+        var startTime = (new Date()).getTime();
+        animate(myCurve, canvas, context, startTime);
+      }, 1000);
+    </script>
+  </body>
+</html>
