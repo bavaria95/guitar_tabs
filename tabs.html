@@ -9,7 +9,7 @@
     </style>
   </head>
   <body>
-    <canvas id="myCanvas" width="578" height="200"></canvas>
+    <canvas id="myCanvas" width="1000" height="400"></canvas>
     <script>
       window.requestAnimFrame = (function(callback) {
         return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame ||
@@ -26,49 +26,74 @@
       }
 
       function animate(myCurve, canvas, context, startTime) {
-        // update
+
+      	if (myCurve.linear_speed < -0.01) {
+      		myCurve.linear_speed = 0.0;
+      		return;
+      	}
+
+      	if (myCurve.linear_speed < 0.5 && Math.abs(myCurve.control_y - 100) < 10) {
+      		return;
+      	}
+
         var time = (new Date()).getTime() - startTime;
 
-        var linearSpeed = 0.5;
-        // pixels / second
-        // var newX = linearSpeed * time / 1000;
+        var dy = myCurve.linear_speed * time / 1000 * myCurve.sign;
 
-        var dy = linearSpeed * time / 1000 * myCurve.sign;
-        if ((myCurve.control_y + dy > (myCurve.start_y + 70) && myCurve.sign == 1) || (myCurve.control_y + dy < (myCurve.start_y - 70) && myCurve.sign == -1))
+        if ((myCurve.control_y + dy > (myCurve.start_y + myCurve.amplitude*myCurve.sign) && myCurve.sign == 1) || (myCurve.control_y + dy < (myCurve.start_y - myCurve.amplitude) && myCurve.sign == -1)) {
+	        	myCurve.linear_speed -= 0.80;
+	        	myCurve.sign *= -1;
+	        	myCurve.amplitude *= 0.85;
+        }
+        
+    	myCurve.control_y += dy;
 
-        	myCurve.sign *= -1;
-          myCurve.control_y += dy;
-
-        // clear
         context.clearRect(0, 0, canvas.width, canvas.height);
 
         drawCurve(myCurve, context);
 
-        // request new frame
+
         requestAnimFrame(function() {
           animate(myCurve, canvas, context, startTime);
         });
       }
-      var canvas = document.getElementById('myCanvas');
-      var context = canvas.getContext('2d');
 
-      var myCurve = {
+	var canvas = document.getElementById('myCanvas');
+  	var context = canvas.getContext('2d');
+
+  	var myCurve = {
         start_x: 10,
         start_y: 100,
-        control_x: 210,
-        control_y: 115,
-        end_x: 410,
+        control_x: 410,
+        control_y: 100,
+        end_x: 810,
         end_y: 100,
-        sign: 1
+        sign: 1,
+        linear_speed: 10.0,
+        amplitude: 60
+      };
+      
+    drawCurve(myCurve, context);
+
+    function oscillate_first() {
+
+    myCurve = {
+        start_x: 10,
+        start_y: 100,
+        control_x: 410,
+        control_y: 100,
+        end_x: 810,
+        end_y: 100,
+        sign: 1,
+        linear_speed: 10.0,
+        amplitude: 60
       };
 
-      drawCurve(myCurve, context);
+	  var startTime = (new Date()).getTime();
+	  animate(myCurve, canvas, context, startTime);
+    }
 
-      // wait one second before starting animation
-      setTimeout(function() {
-        var startTime = (new Date()).getTime();
-        animate(myCurve, canvas, context, startTime);
-      }, 1000);
     </script>
+    <button onclick="oscillate_first()">Oscillate first string</button>
   </body>
 </html>
