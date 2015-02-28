@@ -8,15 +8,16 @@
       }
     </style>
   </head>
+  
   <body>
-    <canvas id="myCanvas" width="1010" height="600"></canvas>
+    <canvas id="my_canvas" width="1010" height="600"></canvas>
 
     <script>
       var N_modes = 22;
-	  var canvas = document.getElementById('myCanvas');
+	  var canvas = document.getElementById('my_canvas');
   	  var context = canvas.getContext('2d');
       var strings_pos = [40, 100, 160, 220, 280, 340];
-      var curves = [];
+      var strings = [];
       var string_length = 1000;
       window.requestAnimFrame = (function(callback) {
         return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame ||
@@ -25,16 +26,16 @@
         };
       })();
 
-      function drawCurve(myCurve, ctx) {
+      function draw_curve(my_curve, ctx) {
         ctx.beginPath();
-        ctx.moveTo(myCurve.start_x, myCurve.start_y);
-        ctx.quadraticCurveTo(myCurve.control_x, myCurve.control_y, myCurve.end_x, myCurve.end_y);
+        ctx.moveTo(my_curve.start_x, my_curve.start_y);
+        ctx.quadraticCurveTo(my_curve.control_x, my_curve.control_y, my_curve.end_x, my_curve.end_y);
         ctx.stroke();
       }
 
-      function drawAllCurves() {
-      	for (var j = 0; j < curves.length; j++)
-    		drawCurve(curves[j], context);
+      function draw_all_strings() {
+      	for (var j = 0; j < strings.length; j++)
+    		draw_curve(strings[j], context);
       }
 
       function modes_precalc() {
@@ -44,43 +45,43 @@
       	return modes_x;
       }
 
-      function animate(myCurve, canvas, context, startTime) {
+      function animate(my_curve, canvas, context, startTime) {
 
-      	if (myCurve.linear_speed < -0.01) {
+      	if (my_curve.linear_speed < -0.01) {
       		return;
       	}
 
-      	if (myCurve.linear_speed < 0.5 && Math.abs(myCurve.control_y - myCurve.start_y) < 8) {
-      		myCurve.control_y = myCurve.start_y;
+      	if (my_curve.linear_speed < 0.5 && Math.abs(my_curve.control_y - my_curve.start_y) < 8) {
+      		my_curve.control_y = my_curve.start_y;
       		context.clearRect(0, 0, canvas.width, canvas.height);
-      		drawAllCurves();
+      		draw_all_strings();
       		return;
       	}
 
         var time = (new Date()).getTime() - startTime;
 
-        var dy = myCurve.linear_speed * time / 1000 * myCurve.sign;
+        var dy = my_curve.linear_speed * time / 1000 * my_curve.sign;
 
-        if ((myCurve.control_y + dy > (myCurve.start_y + myCurve.amplitude*myCurve.sign) && myCurve.sign == 1) || (myCurve.control_y + dy < (myCurve.start_y - myCurve.amplitude) && myCurve.sign == -1)) {
-	        	myCurve.linear_speed -= 0.80;
-	        	myCurve.sign *= -1;
-	        	myCurve.amplitude *= 0.85;
+        if ((my_curve.control_y + dy > (my_curve.start_y + my_curve.amplitude*my_curve.sign) && my_curve.sign == 1) || (my_curve.control_y + dy < (my_curve.start_y - my_curve.amplitude) && my_curve.sign == -1)) {
+	        	my_curve.linear_speed -= 0.80;
+	        	my_curve.sign *= -1;
+	        	my_curve.amplitude *= 0.85;
         }
         
-    	myCurve.control_y += dy;
+    	my_curve.control_y += dy;
 
         context.clearRect(0, 0, canvas.width, canvas.height);
 
-        drawAllCurves();
+        draw_all_strings();
 
 
         requestAnimFrame(function() {
-          animate(myCurve, canvas, context, startTime);
+          animate(my_curve, canvas, context, startTime);
         });
       }
 
   	for (var i = 0; i < strings_pos.length; i++) {
-	  	curves[i] = {
+	  	strings[i] = {
 	        start_x: 10,
 	        start_y: strings_pos[i],
 	        control_x: string_length / 2 + 10,
@@ -93,19 +94,19 @@
 	      };
 	}
 
-	drawAllCurves();
+	draw_all_strings();
 
     function oscillate(i) {
 
-	    curves[i].amplitude = 60;
-	    curves[i].linear_speed = 10.0;
+	    strings[i].amplitude = 60;
+	    strings[i].linear_speed = 10.0;
 
 		var startTime = (new Date()).getTime();
-		animate(curves[i], canvas, context, startTime);
+		animate(strings[i], canvas, context, startTime);
     }
 
     function oscillate_all() {
-    	for (var i = 0; i < curves.length; i++) 
+    	for (var i = 0; i < strings.length; i++) 
     		oscillate(i);
     }
 
