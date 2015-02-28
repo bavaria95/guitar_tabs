@@ -9,10 +9,15 @@
     </style>
   </head>
   <body>
-    <canvas id="myCanvas" width="1000" height="600"></canvas>
+    <canvas id="myCanvas" width="1010" height="600"></canvas>
+
     <script>
+      var N_modes = 22;
+	  var canvas = document.getElementById('myCanvas');
+  	  var context = canvas.getContext('2d');
       var strings_pos = [40, 100, 160, 220, 280, 340];
       var curves = [];
+      var string_length = 1000;
       window.requestAnimFrame = (function(callback) {
         return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame ||
         function(callback) {
@@ -30,6 +35,13 @@
       function drawAllCurves() {
       	for (var j = 0; j < curves.length; j++)
     		drawCurve(curves[j], context);
+      }
+
+      function modes_precalc() {
+      	var modes_x = [];
+      	for (var i = N_modes; i >= 0; i--)
+      		modes_x.push(string_length - (string_length * Math.pow(2, -i/12.0)) + 10);
+      	return modes_x;
       }
 
       function animate(myCurve, canvas, context, startTime) {
@@ -67,22 +79,18 @@
         });
       }
 
-	var canvas = document.getElementById('myCanvas');
-  	var context = canvas.getContext('2d');
-
   	for (var i = 0; i < strings_pos.length; i++) {
 	  	curves[i] = {
 	        start_x: 10,
 	        start_y: strings_pos[i],
-	        control_x: 410,
+	        control_x: string_length / 2 + 10,
 	        control_y: strings_pos[i],
-	        end_x: 810,
+	        end_x: string_length + 10,
 	        end_y: strings_pos[i],
 	        sign: 1,
 	        linear_speed: 10.0,
 	        amplitude: 60
 	      };
-	      
 	}
 
 	drawAllCurves();
