@@ -27,17 +27,18 @@
         };
       })();
 
-      function draw_curve(my_curve, ctx) {
+      function draw_curve(my_curve, thickness, ctx) {
         ctx.beginPath();
         ctx.moveTo(my_curve.start_x, my_curve.start_y);
         ctx.quadraticCurveTo(my_curve.control_x, my_curve.control_y, my_curve.end_x, my_curve.end_y);
       	ctx.lineCap = 'round';
+      	ctx.lineWidth = thickness;
         ctx.stroke();
       }
 
       function draw_all_strings() {
       	for (var j = 0; j < strings.length; j++)
-    		draw_curve(strings[j], context);
+    		draw_curve(strings[j], j + 1, context);
       }
 
       function modes_precalc() {
