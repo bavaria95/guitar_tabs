@@ -8,7 +8,7 @@
       }
     </style>
   </head>
-  
+
   <body>
     <canvas id="my_canvas" width="1010" height="600"></canvas>
 
@@ -16,9 +16,10 @@
       var N_modes = 22;
 	  var canvas = document.getElementById('my_canvas');
   	  var context = canvas.getContext('2d');
-      var strings_pos = [40, 100, 160, 220, 280, 340];
+      var strings_pos = [40, 90, 140, 190, 240, 290];
       var strings = [];
       var string_length = 1000;
+
       window.requestAnimFrame = (function(callback) {
         return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame ||
         function(callback) {
@@ -30,6 +31,7 @@
         ctx.beginPath();
         ctx.moveTo(my_curve.start_x, my_curve.start_y);
         ctx.quadraticCurveTo(my_curve.control_x, my_curve.control_y, my_curve.end_x, my_curve.end_y);
+      	ctx.lineCap = 'round';
         ctx.stroke();
       }
 
@@ -41,8 +43,20 @@
       function modes_precalc() {
       	var modes_x = [];
       	for (var i = N_modes; i >= 0; i--)
-      		modes_x.push(string_length - (string_length * Math.pow(2, -i/12.0)) + 10);
+      		modes_x.push(string_length - (string_length * Math.pow(2, -i/12.0)) + 50);
       	return modes_x;
+      }
+
+      function draw_modes() {
+      	modes_x = modes_precalc();
+      	for (var i = 0; i < modes_x.length; i++) {
+      		context.beginPath();
+      		context.moveTo(modes_x[i], 40);
+      		context.lineTo(modes_x[i], 290);
+      		context.lineWidth = 1;
+      		context.lineCap = 'butt';
+      		context.stroke();
+      	}
       }
 
       function animate(my_curve, canvas, context, startTime) {
@@ -54,6 +68,8 @@
       	if (my_curve.linear_speed < 0.5 && Math.abs(my_curve.control_y - my_curve.start_y) < 8) {
       		my_curve.control_y = my_curve.start_y;
       		context.clearRect(0, 0, canvas.width, canvas.height);
+
+      		draw_modes();
       		draw_all_strings();
       		return;
       	}
@@ -72,6 +88,7 @@
 
         context.clearRect(0, 0, canvas.width, canvas.height);
 
+        draw_modes();
         draw_all_strings();
 
 
@@ -94,6 +111,7 @@
 	      };
 	}
 
+	draw_modes();
 	draw_all_strings();
 
     function oscillate(i) {
