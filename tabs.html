@@ -9,8 +9,10 @@
     </style>
   </head>
   <body>
-    <canvas id="myCanvas" width="1000" height="400"></canvas>
+    <canvas id="myCanvas" width="1000" height="600"></canvas>
     <script>
+      var strings_pos = [40, 100, 160, 220, 280, 340];
+      var curves = [];
       window.requestAnimFrame = (function(callback) {
         return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame ||
         function(callback) {
@@ -25,14 +27,21 @@
         ctx.stroke();
       }
 
+      function drawAllCurves() {
+      	for (var j = 0; j < curves.length; j++)
+    		drawCurve(curves[j], context);
+      }
+
       function animate(myCurve, canvas, context, startTime) {
 
       	if (myCurve.linear_speed < -0.01) {
-      		myCurve.linear_speed = 0.0;
       		return;
       	}
 
-      	if (myCurve.linear_speed < 0.5 && Math.abs(myCurve.control_y - 100) < 10) {
+      	if (myCurve.linear_speed < 0.5 && Math.abs(myCurve.control_y - myCurve.start_y) < 8) {
+      		myCurve.control_y = myCurve.start_y;
+      		context.clearRect(0, 0, canvas.width, canvas.height);
+      		drawAllCurves();
       		return;
       	}
 
@@ -50,7 +59,7 @@
 
         context.clearRect(0, 0, canvas.width, canvas.height);
 
-        drawCurve(myCurve, context);
+        drawAllCurves();
 
 
         requestAnimFrame(function() {
@@ -61,39 +70,44 @@
 	var canvas = document.getElementById('myCanvas');
   	var context = canvas.getContext('2d');
 
-  	var myCurve = {
-        start_x: 10,
-        start_y: 100,
-        control_x: 410,
-        control_y: 100,
-        end_x: 810,
-        end_y: 100,
-        sign: 1,
-        linear_speed: 10.0,
-        amplitude: 60
-      };
-      
-    drawCurve(myCurve, context);
+  	for (var i = 0; i < strings_pos.length; i++) {
+	  	curves[i] = {
+	        start_x: 10,
+	        start_y: strings_pos[i],
+	        control_x: 410,
+	        control_y: strings_pos[i],
+	        end_x: 810,
+	        end_y: strings_pos[i],
+	        sign: 1,
+	        linear_speed: 10.0,
+	        amplitude: 60
+	      };
+	      
+	}
 
-    function oscillate_first() {
+	drawAllCurves();
 
-    myCurve = {
-        start_x: 10,
-        start_y: 100,
-        control_x: 410,
-        control_y: 100,
-        end_x: 810,
-        end_y: 100,
-        sign: 1,
-        linear_speed: 10.0,
-        amplitude: 60
-      };
+    function oscillate(i) {
 
-	  var startTime = (new Date()).getTime();
-	  animate(myCurve, canvas, context, startTime);
+	    curves[i].amplitude = 60;
+	    curves[i].linear_speed = 10.0;
+
+		var startTime = (new Date()).getTime();
+		animate(curves[i], canvas, context, startTime);
+    }
+
+    function oscillate_all() {
+    	for (var i = 0; i < curves.length; i++) 
+    		oscillate(i);
     }
 
     </script>
-    <button onclick="oscillate_first()">Oscillate first string</button>
+    <br>
+    <button onclick="oscillate(0)">Oscillate first string</button>
+    <button onclick="oscillate(1)">Oscillate second string</button>
+    <button onclick="oscillate(2)">Oscillate third string</button>
+    <button onclick="oscillate(3)">Oscillate fourth string</button>
+    <button onclick="oscillate(4)">Oscillate fifth string</button>
+    <button onclick="oscillate(5)">Oscillate sixth string</button>
   </body>
 </html>
