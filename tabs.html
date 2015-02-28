@@ -60,6 +60,15 @@
       	}
       }
 
+      function get_mouse_pos(canvas, evt) {
+        var rect = canvas.getBoundingClientRect();
+        return {
+          x: evt.clientX - rect.left,
+          y: evt.clientY - rect.top
+        };
+      }
+
+
       function animate(my_curve, canvas, context, startTime) {
 
       	if (my_curve.linear_speed < -0.01) {
@@ -128,6 +137,12 @@
     	for (var i = 0; i < strings.length; i++) 
     		oscillate(i);
     }
+
+    canvas.addEventListener('click', function(evt) {
+        var mouse_pos = get_mouse_pos(canvas, evt);
+        var message = 'Mouse position: ' + mouse_pos.x + ',' + mouse_pos.y;
+        console.log(message);
+      }, false);
 
     </script>
     <br>
