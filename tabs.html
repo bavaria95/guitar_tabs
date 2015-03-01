@@ -10,7 +10,7 @@
   </head>
 
   <body>
-    <canvas id="my_canvas" width="1010" height="600"></canvas>
+    <canvas id="my_canvas" width="1020" height="600"></canvas>
 
     <script>
       var N_frets = 22;
@@ -22,6 +22,7 @@
       var string_length = 1000;
       var frets_x = frets_precalc();
       var cross_size = 8;
+      var notes = [];
 
       window.requestAnimFrame = (function(callback) {
         return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame ||
@@ -48,7 +49,7 @@
       function frets_precalc() {
       	var frets_x = [];
       	for (var i = N_frets; i >= 0; i--)
-      		frets_x.push(string_length - (string_length * Math.pow(2, -i/12.0)) + 50);
+      		frets_x.push(string_length - (string_length * Math.pow(2, -i/12.0)) + 50);	// offset - 50px
       	return frets_x;
       }
 
@@ -58,7 +59,10 @@
       		context.moveTo(frets_x[i], 40);
       		context.lineTo(frets_x[i], 240);
       		context.lineWidth = 1;
+      		if (i == N_frets)
+      			context.lineWidth = 4;
       		context.strokeStyle = '#000000';
+      		context.lineCap = 'butt';
       		context.stroke();
       	}
       }
@@ -94,6 +98,11 @@
       	console.log(a, b, x, y);
       }
 
+      function draw_all_points() {
+      	for (var i = 0; i < notes.length; i++)
+      		draw_point(notes[i])
+      }
+
       function get_mouse_pos(canvas, evt) {
         var rect = canvas.getBoundingClientRect();
         return {
@@ -105,9 +114,8 @@
 
       function animate(my_curve, canvas, startTime) {
 
-      	if (my_curve.linear_speed < -0.01) {
+      	if (my_curve.linear_speed < -0.01)
       		return;
-      	}
 
       	if (my_curve.linear_speed < 0.5 && Math.abs(my_curve.control_y - my_curve.start_y) < 8) {
       		my_curve.control_y = my_curve.start_y;
@@ -115,6 +123,7 @@
 
       		draw_frets();
       		draw_all_strings();
+      		draw_all_points();
       		return;
       	}
 
@@ -134,6 +143,7 @@
 
         draw_frets();
         draw_all_strings();
+        draw_all_points();
 
 
         requestAnimFrame(function() {
@@ -157,6 +167,7 @@
 
 	draw_frets();
 	draw_all_strings();
+	draw_all_points();
 
     function oscillate(i) {
 
@@ -179,7 +190,10 @@
         var message = 'Mouse position: ' + x + ',' + y;
         if (click_in_neck(x, y)) {
         	// console.log(point_detection(x, y));
-        	draw_point(point_detection(x, y));
+        	var point = point_detection(x, y);
+        	draw_point(point);
+        	notes.push(point);
+        	console.log(notes);
 	    }
       }, false);
 
@@ -220,6 +234,14 @@
 	    return {'string': s, 'fret': f};
     }
 
+    function clear_neck() {
+    	notes = [];
+
+    	context.clearRect(0, 0, canvas.width, canvas.height);
+    	draw_frets();
+        draw_all_strings();
+    }
+
     </script>
     <br>
     <button onclick="oscillate(0)">Oscillate first string</button>
@@ -229,5 +251,6 @@
     <button onclick="oscillate(4)">Oscillate fifth string</button>
     <button onclick="oscillate(5)">Oscillate sixth string</button>
     <br>
+    <button onclick="clear_neck()">Clear neck</button>
   </body>
 </html>
