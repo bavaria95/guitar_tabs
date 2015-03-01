@@ -20,6 +20,7 @@
       var diff_between_strings = 40;
       var strings = [];
       var string_length = 1000;
+      var frets_x = frets_precalc();
 
       window.requestAnimFrame = (function(callback) {
         return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame ||
@@ -50,7 +51,6 @@
       }
 
       function draw_frets() {
-      	frets_x = frets_precalc();
       	for (var i = 0; i < frets_x.length; i++) {
       		context.beginPath();
       		context.moveTo(frets_x[i], 40);
@@ -144,6 +144,7 @@
         console.log(message);
         console.log(click_in_neck(mouse_pos.x, mouse_pos.y))
         console.log(string_detection(mouse_pos.x, mouse_pos.y))
+        console.log(fret_detection(mouse_pos.x, mouse_pos.y))
       }, false);
 
     function click_in_neck(x, y) {
@@ -165,8 +166,14 @@
     		return i - 1;
     	if (Math.abs(y - strings_pos[i]) < 15)
     		return i;
-    	
+
 	    return -1;
+    }
+
+    function fret_detection(x, y) {
+    	var i;
+    	for (i = 0; i < frets_x.length, x < frets_x[i]; i++);
+    	return N_frets - i + 1;
     }
 
     </script>
