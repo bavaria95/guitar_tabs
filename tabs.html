@@ -21,6 +21,7 @@
       var strings = [];
       var string_length = 1000;
       var frets_x = frets_precalc();
+      var cross_size = 8;
 
       window.requestAnimFrame = (function(callback) {
         return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame ||
@@ -29,18 +30,19 @@
         };
       })();
 
-      function draw_curve(my_curve, thickness, context) {
+      function draw_curve(my_curve, thickness) {
         context.beginPath();
         context.moveTo(my_curve.start_x, my_curve.start_y);
         context.quadraticCurveTo(my_curve.control_x, my_curve.control_y, my_curve.end_x, my_curve.end_y);
       	context.lineCap = 'round';
       	context.lineWidth = thickness;
+      	context.strokeStyle = '#000000';
         context.stroke();
       }
 
       function draw_all_strings() {
       	for (var j = 0; j < strings.length; j++)
-    		draw_curve(strings[j], j + 1, context);
+    		draw_curve(strings[j], j + 1);
       }
 
       function frets_precalc() {
@@ -56,8 +58,24 @@
       		context.moveTo(frets_x[i], 40);
       		context.lineTo(frets_x[i], 240);
       		context.lineWidth = 1;
+      		context.strokeStyle = '#000000';
       		context.stroke();
       	}
+      }
+
+      function draw_cross(x, y) {	// (x, y) - center point of cross
+      	context.beginPath();
+      	context.moveTo(x - cross_size + 2, y - cross_size);
+      	context.lineTo(x + cross_size - 2, y + cross_size);
+      	context.lineWidth = 3;
+      	context.strokeStyle = '#ff0000';
+      	context.stroke();
+
+      	context.beginPath();
+      	context.moveTo(x + cross_size - 2, y - cross_size);
+      	context.lineTo(x - cross_size + 2, y + cross_size);
+      	context.lineWidth = 3;
+      	context.stroke();
       }
 
       function get_mouse_pos(canvas, evt) {
@@ -69,7 +87,7 @@
       }
 
 
-      function animate(my_curve, canvas, context, startTime) {
+      function animate(my_curve, canvas, startTime) {
 
       	if (my_curve.linear_speed < -0.01) {
       		return;
@@ -103,7 +121,7 @@
 
 
         requestAnimFrame(function() {
-          animate(my_curve, canvas, context, startTime);
+          animate(my_curve, canvas, startTime);
         });
       }
 
@@ -130,7 +148,7 @@
 	    strings[i].linear_speed = 10.0;
 
 		var startTime = (new Date()).getTime();
-		animate(strings[i], canvas, context, startTime);
+		animate(strings[i], canvas, startTime);
     }
 
     function oscillate_all() {
@@ -193,5 +211,7 @@
     <button onclick="oscillate(3)">Oscillate fourth string</button>
     <button onclick="oscillate(4)">Oscillate fifth string</button>
     <button onclick="oscillate(5)">Oscillate sixth string</button>
+    <br>
+    <button onclick="draw_cross(200, 200)">Draw cross</button>
   </body>
 </html>
