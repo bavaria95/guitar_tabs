@@ -13,10 +13,10 @@
     <canvas id="my_canvas" width="1010" height="600"></canvas>
 
     <script>
-      var N_modes = 22;
+      var N_frets = 22;
 	  var canvas = document.getElementById('my_canvas');
   	  var context = canvas.getContext('2d');
-      var strings_pos = [40, 90, 140, 190, 240, 290];
+      var strings_pos = [40, 80, 120, 160, 200, 240];
       var strings = [];
       var string_length = 1000;
 
@@ -41,19 +41,19 @@
     		draw_curve(strings[j], j + 1, context);
       }
 
-      function modes_precalc() {
-      	var modes_x = [];
-      	for (var i = N_modes; i >= 0; i--)
-      		modes_x.push(string_length - (string_length * Math.pow(2, -i/12.0)) + 50);
-      	return modes_x;
+      function frets_precalc() {
+      	var frets_x = [];
+      	for (var i = N_frets; i >= 0; i--)
+      		frets_x.push(string_length - (string_length * Math.pow(2, -i/12.0)) + 50);
+      	return frets_x;
       }
 
-      function draw_modes() {
-      	modes_x = modes_precalc();
-      	for (var i = 0; i < modes_x.length; i++) {
+      function draw_frets() {
+      	frets_x = frets_precalc();
+      	for (var i = 0; i < frets_x.length; i++) {
       		context.beginPath();
-      		context.moveTo(modes_x[i], 40);
-      		context.lineTo(modes_x[i], 290);
+      		context.moveTo(frets_x[i], 40);
+      		context.lineTo(frets_x[i], 240);
       		context.lineWidth = 1;
       		context.lineCap = 'butt';
       		context.stroke();
@@ -79,7 +79,7 @@
       		my_curve.control_y = my_curve.start_y;
       		context.clearRect(0, 0, canvas.width, canvas.height);
 
-      		draw_modes();
+      		draw_frets();
       		draw_all_strings();
       		return;
       	}
@@ -98,7 +98,7 @@
 
         context.clearRect(0, 0, canvas.width, canvas.height);
 
-        draw_modes();
+        draw_frets();
         draw_all_strings();
 
 
@@ -121,7 +121,7 @@
 	      };
 	}
 
-	draw_modes();
+	draw_frets();
 	draw_all_strings();
 
     function oscillate(i) {
@@ -142,7 +142,12 @@
         var mouse_pos = get_mouse_pos(canvas, evt);
         var message = 'Mouse position: ' + mouse_pos.x + ',' + mouse_pos.y;
         console.log(message);
+        console.log(click_in_neck(mouse_pos.x, mouse_pos.y))
       }, false);
+
+    function click_in_neck(x, y) {
+    	return (x > 8 && x < 772 && y > 38 && y < 242);		// boundary - 2px
+    }
 
     </script>
     <br>
