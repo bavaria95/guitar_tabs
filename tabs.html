@@ -78,6 +78,16 @@
       	context.stroke();
       }
 
+      function draw_point(point) {
+      	var a = frets_x[N_frets - point.fret];
+      	var b = frets_x[N_frets - point.fret + 1];
+
+      	var x = b + (a - b)/2;
+      	var y = strings_pos[point.string];
+
+      	draw_cross(x, y);
+      }
+
       function get_mouse_pos(canvas, evt) {
         var rect = canvas.getBoundingClientRect();
         return {
@@ -162,7 +172,8 @@
         var y = mouse_pos.y;
         var message = 'Mouse position: ' + x + ',' + y;
         if (click_in_neck(x, y)) {
-        	console.log(point_detection(x, y));
+        	// console.log(point_detection(x, y));
+        	draw_point(point_detection(x, y));
 	    }
       }, false);
 
@@ -212,6 +223,6 @@
     <button onclick="oscillate(4)">Oscillate fifth string</button>
     <button onclick="oscillate(5)">Oscillate sixth string</button>
     <br>
-    <button onclick="draw_cross(200, 200)">Draw cross</button>
+    <!-- <button onclick="draw_cross(184, 200)">Draw cross</button> -->
   </body>
 </html>
