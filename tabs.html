@@ -80,12 +80,18 @@
 
       function draw_point(point) {
       	var a = frets_x[N_frets - point.fret];
-      	var b = frets_x[N_frets - point.fret + 1];
+      	var b;
+
+      	if (point.fret == 0)
+      		b = 10;
+      	else
+      		b = frets_x[N_frets - point.fret + 1];
 
       	var x = b + (a - b)/2;
       	var y = strings_pos[point.string];
 
       	draw_cross(x, y);
+      	console.log(a, b, x, y);
       }
 
       function get_mouse_pos(canvas, evt) {
@@ -93,7 +99,7 @@
         return {
           x: evt.clientX - rect.left,
           y: evt.clientY - rect.top
-        };
+        }
       }
 
 
@@ -223,6 +229,5 @@
     <button onclick="oscillate(4)">Oscillate fifth string</button>
     <button onclick="oscillate(5)">Oscillate sixth string</button>
     <br>
-    <!-- <button onclick="draw_cross(184, 200)">Draw cross</button> -->
   </body>
 </html>
