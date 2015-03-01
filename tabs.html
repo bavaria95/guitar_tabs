@@ -140,11 +140,12 @@
 
     canvas.addEventListener('click', function(evt) {
         var mouse_pos = get_mouse_pos(canvas, evt);
-        var message = 'Mouse position: ' + mouse_pos.x + ',' + mouse_pos.y;
-        console.log(message);
-        console.log(click_in_neck(mouse_pos.x, mouse_pos.y))
-        console.log(string_detection(mouse_pos.x, mouse_pos.y))
-        console.log(fret_detection(mouse_pos.x, mouse_pos.y))
+        var x = mouse_pos.x;
+        var y = mouse_pos.y;
+        var message = 'Mouse position: ' + x + ',' + y;
+        if (click_in_neck(x, y)) {
+        	console.log(point_detection(x, y));
+	    }
       }, false);
 
     function click_in_neck(x, y) {
@@ -155,6 +156,7 @@
     	var i;
     	for (i = 0; i < strings_pos.length, y > strings_pos[i]; i++);
 
+    	// let's assume that we'd detect pressing some string at 15px distance
     	if (i == 0)
     		if (Math.abs(y - strings_pos[0]) < 15)
     			return 0;
@@ -174,6 +176,13 @@
     	var i;
     	for (i = 0; i < frets_x.length, x < frets_x[i]; i++);
     	return N_frets - i + 1;
+    }
+
+    function point_detection(x, y) {
+    	var s = string_detection(x, y);
+    	var f = fret_detection(x, y);
+
+	    return {'string': s, 'fret': f};
     }
 
     </script>
