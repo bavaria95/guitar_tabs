@@ -55,15 +55,35 @@
       	return frets_x;
       }
 
-      function draw_all_dots() {
+      function draw_single_dots() {
       	for (var i = 0; i < frets_with_dot.length; i++) {
       		var fret = frets_with_dot[i];
       		var x = frets_x[N_frets - fret + 1] + (frets_x[N_frets - fret] - frets_x[N_frets - fret + 1])/2;
-      		var y = strings_pos[2] + (strings_pos[3] - strings_pos[2])/2;
+      		var y = strings_pos[2] + (strings_pos[3] - strings_pos[2])/2; 	// between third and fourh strings
 
       		draw_dot(x, y, 5); 	// 5px - radius of dot
       	}
       }
+
+      function draw_double_dots() {
+      	for (var i = 0; i < frets_with_two_dots.length; i++) {
+      		var fret = frets_with_two_dots[i];
+      		var x = frets_x[N_frets - fret + 1] + (frets_x[N_frets - fret] - frets_x[N_frets - fret + 1])/2;
+      		
+      		var y = strings_pos[0] + (strings_pos[1] - strings_pos[0])/2;
+
+      		draw_dot(x, y, 4); 	// 4px - radius of dot
+
+      		y = strings_pos[4] + (strings_pos[5] - strings_pos[4])/2;
+
+      		draw_dot(x, y, 4); 	
+      	}
+      }
+
+     function draw_all_dots() {
+     	draw_single_dots();
+     	draw_double_dots();
+     }
 
       function draw_frets() {
       	for (var i = 0; i < frets_x.length; i++) {
@@ -119,6 +139,8 @@
         context.arc(x, y, r, 0, 2 * Math.PI, false);
         context.fillStyle = 'black';
         context.fill();
+        context.lineWidth = 5;
+        context.strokeStyle = '#000000';
         context.stroke(); 
       }
 
@@ -141,9 +163,9 @@
       		context.clearRect(0, 0, canvas.width, canvas.height);
 
       		draw_frets();
+      		draw_all_dots();
       		draw_all_strings();
       		draw_all_points();
-      		draw_all_dots();
       		return;
       	}
 
@@ -162,9 +184,9 @@
         context.clearRect(0, 0, canvas.width, canvas.height);
 
         draw_frets();
+        draw_all_dots();
         draw_all_strings();
         draw_all_points();
-        draw_all_dots();
 
 
         requestAnimFrame(function() {
@@ -187,9 +209,9 @@
 	}
 
 	draw_frets();
+	draw_all_dots();
 	draw_all_strings();
 	draw_all_points();
-	draw_all_dots();
 
     function oscillate(i) {
 
@@ -275,6 +297,5 @@
     <button onclick="oscillate(5)">Oscillate sixth string</button>
     <br>
     <button onclick="clear_neck()">Clear neck</button>
-    <button onclick="draw_dot(278, 140, 6)">Dot</button>
   </body>
 </html>
