@@ -23,6 +23,8 @@
       var frets_x = frets_precalc();
       var cross_size = 8;
       var notes = [];
+      var frets_with_dot = [3, 5, 7, 9, 15, 17, 19, 21];
+      var frets_with_two_dots = [12];
 
       window.requestAnimFrame = (function(callback) {
         return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame ||
@@ -51,6 +53,16 @@
       	for (var i = N_frets; i >= 0; i--)
       		frets_x.push(string_length - (string_length * Math.pow(2, -i/12.0)) + 50);	// offset - 50px
       	return frets_x;
+      }
+
+      function draw_all_dots() {
+      	for (var i = 0; i < frets_with_dot.length; i++) {
+      		var fret = frets_with_dot[i];
+      		var x = frets_x[N_frets - fret + 1] + (frets_x[N_frets - fret] - frets_x[N_frets - fret + 1])/2;
+      		var y = strings_pos[2] + (strings_pos[3] - strings_pos[2])/2;
+
+      		draw_dot(x, y, 5); 	// 5px - radius of dot
+      	}
       }
 
       function draw_frets() {
@@ -95,12 +107,19 @@
       	var y = strings_pos[point.string];
 
       	draw_cross(x, y);
-      	console.log(a, b, x, y);
       }
 
       function draw_all_points() {
       	for (var i = 0; i < notes.length; i++)
       		draw_point(notes[i])
+      }
+
+      function draw_dot(x, y, r) {
+        context.beginPath();
+        context.arc(x, y, r, 0, 2 * Math.PI, false);
+        context.fillStyle = 'black';
+        context.fill();
+        context.stroke(); 
       }
 
       function get_mouse_pos(canvas, evt) {
@@ -124,6 +143,7 @@
       		draw_frets();
       		draw_all_strings();
       		draw_all_points();
+      		draw_all_dots();
       		return;
       	}
 
@@ -144,6 +164,7 @@
         draw_frets();
         draw_all_strings();
         draw_all_points();
+        draw_all_dots();
 
 
         requestAnimFrame(function() {
@@ -168,6 +189,7 @@
 	draw_frets();
 	draw_all_strings();
 	draw_all_points();
+	draw_all_dots();
 
     function oscillate(i) {
 
@@ -193,7 +215,7 @@
         	var point = point_detection(x, y);
         	draw_point(point);
         	notes.push(point);
-        	console.log(notes);
+        	// console.log(notes);
 	    }
       }, false);
 
@@ -240,6 +262,7 @@
     	context.clearRect(0, 0, canvas.width, canvas.height);
     	draw_frets();
         draw_all_strings();
+        draw_all_dots();
     }
 
     </script>
@@ -252,5 +275,6 @@
     <button onclick="oscillate(5)">Oscillate sixth string</button>
     <br>
     <button onclick="clear_neck()">Clear neck</button>
+    <button onclick="draw_dot(278, 140, 6)">Dot</button>
   </body>
 </html>
