@@ -144,6 +144,15 @@
         context.stroke(); 
       }
 
+      function redraw_screen() {
+      	context.clearRect(0, 0, canvas.width, canvas.height);
+
+      	draw_frets();
+        draw_all_dots();
+        draw_all_strings();
+        draw_all_points();
+      }
+
       function get_mouse_pos(canvas, evt) {
         var rect = canvas.getBoundingClientRect();
         return {
@@ -160,12 +169,9 @@
 
       	if (my_curve.linear_speed < 0.5 && Math.abs(my_curve.control_y - my_curve.start_y) < 8) {
       		my_curve.control_y = my_curve.start_y;
-      		context.clearRect(0, 0, canvas.width, canvas.height);
+      		// context.clearRect(0, 0, canvas.width, canvas.height);
 
-      		draw_frets();
-      		draw_all_dots();
-      		draw_all_strings();
-      		draw_all_points();
+      		redraw_screen();
       		return;
       	}
 
@@ -181,12 +187,9 @@
         
     	my_curve.control_y += dy;
 
-        context.clearRect(0, 0, canvas.width, canvas.height);
+        // context.clearRect(0, 0, canvas.width, canvas.height);
 
-        draw_frets();
-        draw_all_dots();
-        draw_all_strings();
-        draw_all_points();
+        redraw_screen();
 
 
         requestAnimFrame(function() {
@@ -208,10 +211,8 @@
 	      };
 	}
 
-	draw_frets();
-	draw_all_dots();
-	draw_all_strings();
-	draw_all_points();
+	redraw_screen();
+
 
     function oscillate(i) {
 
@@ -234,10 +235,15 @@
         var message = 'Mouse position: ' + x + ',' + y;
         if (click_in_neck(x, y)) {
         	var point = point_detection(x, y);
-        	if (is_empty(point)) {
-        		draw_point(point);
-        		notes.push(point);
-        	}
+        	if (point.string != -1)
+	        	if (is_empty(point)) {
+	        		draw_point(point);
+	        		notes.push(point);
+	        	}
+	        	else {
+	        		remove_note(point);
+	        		redraw_screen();
+	        	}
 	    }
       }, false);
 
@@ -294,6 +300,16 @@
     			return false;
     	}
     	return true;
+    }
+
+    function remove_note(point) {
+    	for (var i = 0; i < notes.length; i++) {
+    		var note = notes[i];
+    		if (note.fret === point.fret && note.string === point.string) {
+    			notes.splice(i, 1);
+    			return;
+    		}
+    	}
     }
 
     </script>
