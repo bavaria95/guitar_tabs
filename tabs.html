@@ -233,11 +233,11 @@
         var y = mouse_pos.y;
         var message = 'Mouse position: ' + x + ',' + y;
         if (click_in_neck(x, y)) {
-        	// console.log(point_detection(x, y));
         	var point = point_detection(x, y);
-        	draw_point(point);
-        	notes.push(point);
-        	// console.log(notes);
+        	if (is_empty(point)) {
+        		draw_point(point);
+        		notes.push(point);
+        	}
 	    }
       }, false);
 
@@ -285,6 +285,15 @@
     	draw_frets();
         draw_all_strings();
         draw_all_dots();
+    }
+
+    function is_empty(point) {
+    	for (var i = 0; i < notes.length; i++) {
+    		var note = notes[i];
+    		if (note.fret === point.fret && note.string === point.string)
+    			return false;
+    	}
+    	return true;
     }
 
     </script>
