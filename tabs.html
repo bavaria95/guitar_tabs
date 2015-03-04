@@ -10,7 +10,7 @@
   </head>
 
   <body>
-    <canvas id="my_canvas" width="1020" height="600"></canvas>
+    <canvas id="my_canvas" width="1020" height="400"></canvas>
 
     <script>
       var N_frets = 22;
@@ -172,7 +172,6 @@
 
       	if (my_curve.linear_speed < 0.5 && Math.abs(my_curve.control_y - my_curve.start_y) < 8) {
       		my_curve.control_y = my_curve.start_y;
-      		// context.clearRect(0, 0, canvas.width, canvas.height);
 
       		redraw_screen();
       		return;
@@ -190,7 +189,6 @@
         
     	my_curve.control_y += dy;
 
-        // context.clearRect(0, 0, canvas.width, canvas.height);
 
         redraw_screen();
 
@@ -320,15 +318,30 @@
     	str = {};
     	for (var i = 0; i < notes.length; i++) 
     		str[notes[i].string] = true;
+
     	frames[iter] = notes;
     	iter++;
-    	notes = [];
-    	clear_neck();
-    	for (var k in str) {
-    		oscillate(k);
-    	}
-    	redraw_screen();
+
+    	if (frames[iter])
+    		notes = frames[iter];
+    	else {
+	    	notes = [];
+	    	clear_neck();
+	    	for (var k in str) {
+	    		oscillate(k);
+	    	}
+	    }
+
+	    redraw_screen();
     	console.log(JSON.stringify(frames));
+    }
+
+    function prev() {
+    	frames[iter] = notes;
+    	iter--;
+    	notes = frames[iter];
+    	
+    	redraw_screen();
     }
 
 
@@ -340,8 +353,9 @@
     <button onclick="oscillate(3)">Oscillate fourth string</button>
     <button onclick="oscillate(4)">Oscillate fifth string</button>
     <button onclick="oscillate(5)">Oscillate sixth string</button>
-    <br>
     <button onclick="clear_neck()">Clear neck</button>
+    <br>
+    <button onclick="prev()">Prev accord</button>
     <button onclick="next()">Next accord</button>
 
   </body>
