@@ -26,6 +26,9 @@
       var frets_with_dot = [3, 5, 7, 9, 15, 17, 19, 21];
       var frets_with_two_dots = [12];
 
+      var frames = [];
+      var iter = 0;
+
       window.requestAnimFrame = (function(callback) {
         return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame ||
         function(callback) {
@@ -226,6 +229,7 @@
     function oscillate_all() {
     	for (var i = 0; i < strings.length; i++) 
     		oscillate(i);
+    	return;
     }
 
     canvas.addEventListener('click', function(evt) {
@@ -312,6 +316,22 @@
     	}
     }
 
+    function next() {
+    	str = {};
+    	for (var i = 0; i < notes.length; i++) 
+    		str[notes[i].string] = true;
+    	frames[iter] = notes;
+    	iter++;
+    	notes = [];
+    	clear_neck();
+    	for (var k in str) {
+    		oscillate(k);
+    	}
+    	redraw_screen();
+    	console.log(JSON.stringify(frames));
+    }
+
+
     </script>
     <br>
     <button onclick="oscillate(0)">Oscillate first string</button>
@@ -322,5 +342,7 @@
     <button onclick="oscillate(5)">Oscillate sixth string</button>
     <br>
     <button onclick="clear_neck()">Clear neck</button>
+    <button onclick="next()">Next accord</button>
+
   </body>
 </html>
