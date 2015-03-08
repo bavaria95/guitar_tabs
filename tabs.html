@@ -147,9 +147,16 @@
         context.stroke(); 
       }
 
+      function draw_number() {
+      	context.font="20px Georgia";
+		context.fillText(iter, 25, 30);
+
+      }
+
       function redraw_screen() {
       	context.clearRect(0, 0, canvas.width, canvas.height);
 
+      	draw_number();
       	draw_frets();
         draw_all_dots();
         draw_all_strings();
@@ -290,6 +297,7 @@
     	notes = [];
 
     	context.clearRect(0, 0, canvas.width, canvas.height);
+    	draw_number();
     	draw_frets();
         draw_all_strings();
         draw_all_dots();
@@ -333,17 +341,22 @@
 	    }
 
 	    redraw_screen();
-    	console.log(JSON.stringify(frames));
+    	// console.log(JSON.stringify(frames));
     }
+
 
     function prev() {
     	frames[iter] = notes;
     	iter--;
+    	if (iter < 0) {
+    		frames.unshift([]);
+    		iter++;
+    	}
+
     	notes = frames[iter];
     	
     	redraw_screen();
     }
-
 
     </script>
     <br>
