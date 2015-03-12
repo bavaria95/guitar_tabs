@@ -7,19 +7,39 @@
         padding: 0px;
       }
       canvas {
-        margin-top: 40px;
+        margin-top: 50px;
       }
+
+      .btn.btn-primary {
+        color: #000000;
+        background-color: #343b00;
+        background-image: linear-gradient(to bottom, #804608, #b59809);
+        border-color: #852f00 #852f00 #852f00;
+    }
+    .btn.btn-primary:hover {
+        color: #000000;
+        background-color: #b59809;
+        background-image: linear-gradient(to bottom, #b59809, #b59809);
+        border-color: #852f00 #852f00 #852f00;
+    }
     </style>
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+
   </head>
 
   <body>
+
+    <button type="button" onclick="clear_neck()" class="btn btn-primary btn-lg" style="position:absolute; right:31%; top:2%;"><span class="glyphicon glyphicon-refresh"></span> </button>
+
+    <button type="button" onclick="clear_neck()" class="btn btn-primary btn-lg" style="position:absolute; right:26%; top:2%;"><span class="glyphicon glyphicon-download-alt"></span> </button>
 
     <canvas id="my_canvas" width="1020" height="300"></canvas>
 
     <script>
       var N_frets = 22;
-	    var canvas = document.getElementById('my_canvas');
-  	  var context = canvas.getContext('2d');
+      var canvas = document.getElementById('my_canvas');
+      var context = canvas.getContext('2d');
       var strings_pos = [40, 80, 120, 160, 200, 240];
       var diff_between_strings = 40;
       var strings = [];
@@ -44,101 +64,101 @@
         context.beginPath();
         context.moveTo(my_curve.start_x, my_curve.start_y);
         context.quadraticCurveTo(my_curve.control_x, my_curve.control_y, my_curve.end_x, my_curve.end_y);
-      	context.lineCap = 'round';
-      	context.lineWidth = thickness;
-      	context.strokeStyle = '#000000';
+        context.lineCap = 'round';
+        context.lineWidth = thickness;
+        context.strokeStyle = '#000000';
         context.stroke();
       }
 
       function draw_all_strings() {
-      	for (var j = 0; j < strings.length; j++)
-    		draw_curve(strings[j], j + 1);
+        for (var j = 0; j < strings.length; j++)
+        draw_curve(strings[j], j + 1);
       }
 
       function frets_precalc() {
-      	var frets_x = [];
-      	for (var i = N_frets; i >= 0; i--)
-      		frets_x.push(string_length - (string_length * Math.pow(2, -i/12.0)) + 50);	// offset - 50px
-      	return frets_x;
+        var frets_x = [];
+        for (var i = N_frets; i >= 0; i--)
+          frets_x.push(string_length - (string_length * Math.pow(2, -i/12.0)) + 50);  // offset - 50px
+        return frets_x;
       }
 
       function draw_single_dots() {
-      	for (var i = 0; i < frets_with_dot.length; i++) {
-      		var fret = frets_with_dot[i];
-      		var x = frets_x[N_frets - fret + 1] + (frets_x[N_frets - fret] - frets_x[N_frets - fret + 1])/2;
-      		var y = strings_pos[2] + (strings_pos[3] - strings_pos[2])/2; 	// between third and fourh strings
+        for (var i = 0; i < frets_with_dot.length; i++) {
+          var fret = frets_with_dot[i];
+          var x = frets_x[N_frets - fret + 1] + (frets_x[N_frets - fret] - frets_x[N_frets - fret + 1])/2;
+          var y = strings_pos[2] + (strings_pos[3] - strings_pos[2])/2;   // between third and fourh strings
 
-      		draw_dot(x, y, 5); 	// 5px - radius of dot
-      	}
+          draw_dot(x, y, 5);  // 5px - radius of dot
+        }
       }
 
       function draw_double_dots() {
-      	for (var i = 0; i < frets_with_two_dots.length; i++) {
-      		var fret = frets_with_two_dots[i];
-      		var x = frets_x[N_frets - fret + 1] + (frets_x[N_frets - fret] - frets_x[N_frets - fret + 1])/2;
-      		
-      		var y = strings_pos[0] + (strings_pos[1] - strings_pos[0])/2;
+        for (var i = 0; i < frets_with_two_dots.length; i++) {
+          var fret = frets_with_two_dots[i];
+          var x = frets_x[N_frets - fret + 1] + (frets_x[N_frets - fret] - frets_x[N_frets - fret + 1])/2;
+          
+          var y = strings_pos[0] + (strings_pos[1] - strings_pos[0])/2;
 
-      		draw_dot(x, y, 4); 	// 4px - radius of dot
+          draw_dot(x, y, 4);  // 4px - radius of dot
 
-      		y = strings_pos[4] + (strings_pos[5] - strings_pos[4])/2;
+          y = strings_pos[4] + (strings_pos[5] - strings_pos[4])/2;
 
-      		draw_dot(x, y, 4); 	
-      	}
+          draw_dot(x, y, 4);  
+        }
       }
 
      function draw_all_dots() {
-     	draw_single_dots();
-     	draw_double_dots();
+      draw_single_dots();
+      draw_double_dots();
      }
 
       function draw_frets() {
-      	for (var i = 0; i < frets_x.length; i++) {
-      		context.beginPath();
-      		context.moveTo(frets_x[i], 40);
-      		context.lineTo(frets_x[i], 240);
-      		context.lineWidth = 1;
-      		if (i == N_frets)
-      			context.lineWidth = 4;
-      		context.strokeStyle = '#000000';
-      		context.lineCap = 'butt';
-      		context.stroke();
-      	}
+        for (var i = 0; i < frets_x.length; i++) {
+          context.beginPath();
+          context.moveTo(frets_x[i], 40);
+          context.lineTo(frets_x[i], 240);
+          context.lineWidth = 1;
+          if (i == N_frets)
+            context.lineWidth = 4;
+          context.strokeStyle = '#000000';
+          context.lineCap = 'butt';
+          context.stroke();
+        }
       }
 
-      function draw_cross(x, y) {	// (x, y) - center point of cross
-      	context.beginPath();
-      	context.moveTo(x - cross_size + 2, y - cross_size);
-      	context.lineTo(x + cross_size - 2, y + cross_size);
-      	context.lineWidth = 3;
-      	context.strokeStyle = '#ff0000';
-      	context.stroke();
+      function draw_cross(x, y) { // (x, y) - center point of cross
+        context.beginPath();
+        context.moveTo(x - cross_size + 2, y - cross_size);
+        context.lineTo(x + cross_size - 2, y + cross_size);
+        context.lineWidth = 3;
+        context.strokeStyle = '#ff0000';
+        context.stroke();
 
-      	context.beginPath();
-      	context.moveTo(x + cross_size - 2, y - cross_size);
-      	context.lineTo(x - cross_size + 2, y + cross_size);
-      	context.lineWidth = 3;
-      	context.stroke();
+        context.beginPath();
+        context.moveTo(x + cross_size - 2, y - cross_size);
+        context.lineTo(x - cross_size + 2, y + cross_size);
+        context.lineWidth = 3;
+        context.stroke();
       }
 
       function draw_point(point) {
-      	var a = frets_x[N_frets - point.fret];
-      	var b;
+        var a = frets_x[N_frets - point.fret];
+        var b;
 
-      	if (point.fret == 0)
-      		b = 10;
-      	else
-      		b = frets_x[N_frets - point.fret + 1];
+        if (point.fret == 0)
+          b = 10;
+        else
+          b = frets_x[N_frets - point.fret + 1];
 
-      	var x = b + (a - b)/2;
-      	var y = strings_pos[point.string];
+        var x = b + (a - b)/2;
+        var y = strings_pos[point.string];
 
-      	draw_cross(x, y);
+        draw_cross(x, y);
       }
 
       function draw_all_points() {
-      	for (var i = 0; i < notes.length; i++)
-      		draw_point(notes[i])
+        for (var i = 0; i < notes.length; i++)
+          draw_point(notes[i])
       }
 
       function draw_dot(x, y, r) {
@@ -152,30 +172,29 @@
       }
 
       function draw_number() {
-      	context.font="20px Georgia";
-		    context.fillText(iter, 25, 30);
+        context.font="20px Georgia";
+        context.fillText(iter, 25, 30);
       }
 
       function draw_background() {
 
         var my_gradient = context.createLinearGradient(0, 0, 0, 200);
-        // my_gradient.addColorStop(0, "#47300B");
-        // my_gradient.addColorStop(1, "#F7C24F");
 
-        my_gradient.addColorStop(0, "#632300");
-        my_gradient.addColorStop(0.8, "#E85F15");
+        my_gradient.addColorStop(0, "#4D2A02");
+        my_gradient.addColorStop(0.5, "#734108");
+        my_gradient.addColorStop(1, "#B36812");
 
         context.fillStyle = my_gradient;
         context.fillRect(50, 39, 962, 204)
       }
 
       function redraw_screen() {
-      	context.clearRect(0, 0, canvas.width, canvas.height);
+        context.clearRect(0, 0, canvas.width, canvas.height);
 
         draw_background();
 
-      	draw_number();
-      	draw_frets();
+        draw_number();
+        draw_frets();
         draw_all_dots();
         draw_all_strings();
         draw_all_points();
@@ -192,27 +211,27 @@
 
       function animate(my_curve, canvas, startTime) {
 
-      	if (my_curve.linear_speed < -0.01)
-      		return;
+        if (my_curve.linear_speed < -0.01)
+          return;
 
-      	if (my_curve.linear_speed < 0.5 && Math.abs(my_curve.control_y - my_curve.start_y) < 8) {
-      		my_curve.control_y = my_curve.start_y;
+        if (my_curve.linear_speed < 0.5 && Math.abs(my_curve.control_y - my_curve.start_y) < 8) {
+          my_curve.control_y = my_curve.start_y;
 
-      		redraw_screen();
-      		return;
-      	}
+          redraw_screen();
+          return;
+        }
 
         var time = (new Date()).getTime() - startTime;
 
         var dy = my_curve.linear_speed * time / 1000 * my_curve.sign;
 
         if ((my_curve.control_y + dy > (my_curve.start_y + my_curve.amplitude*my_curve.sign) && my_curve.sign == 1) || (my_curve.control_y + dy < (my_curve.start_y - my_curve.amplitude) && my_curve.sign == -1)) {
-	        	my_curve.linear_speed -= 0.80;
-	        	my_curve.sign *= -1;
-	        	my_curve.amplitude *= 0.85;
+            my_curve.linear_speed -= 0.80;
+            my_curve.sign *= -1;
+            my_curve.amplitude *= 0.85;
         }
         
-    	my_curve.control_y += dy;
+      my_curve.control_y += dy;
 
 
         redraw_screen();
@@ -223,36 +242,36 @@
         });
       }
 
-  	for (var i = 0; i < strings_pos.length; i++) {
-	  	strings[i] = {
-	        start_x: 10,
-	        start_y: strings_pos[i],
-	        control_x: string_length / 2 + 10,
-	        control_y: strings_pos[i],
-	        end_x: string_length + 10,
-	        end_y: strings_pos[i],
-	        sign: 1,
-	        linear_speed: 10.0,
-	        amplitude: 60
-	      };
-	}
+    for (var i = 0; i < strings_pos.length; i++) {
+      strings[i] = {
+          start_x: 10,
+          start_y: strings_pos[i],
+          control_x: string_length / 2 + 10,
+          control_y: strings_pos[i],
+          end_x: string_length + 10,
+          end_y: strings_pos[i],
+          sign: 1,
+          linear_speed: 10.0,
+          amplitude: 60
+        };
+  }
 
-	redraw_screen();
+  redraw_screen();
 
 
     function oscillate(i) {
 
-	    strings[i].amplitude = 60;
-	    strings[i].linear_speed = 10.0;
+      strings[i].amplitude = 60;
+      strings[i].linear_speed = 10.0;
 
-		var startTime = (new Date()).getTime();
-		animate(strings[i], canvas, startTime);
+    var startTime = (new Date()).getTime();
+    animate(strings[i], canvas, startTime);
     }
 
     function oscillate_all() {
-    	for (var i = 0; i < strings.length; i++) 
-    		oscillate(i);
-    	return;
+      for (var i = 0; i < strings.length; i++) 
+        oscillate(i);
+      return;
     }
 
     canvas.addEventListener('click', function(evt) {
@@ -261,135 +280,128 @@
         var y = mouse_pos.y;
         var message = 'Mouse position: ' + x + ',' + y;
         if (click_in_neck(x, y)) {
-        	var point = point_detection(x, y);
-        	if (point.string != -1)
-	        	if (is_empty(point)) {
-	        		draw_point(point);
-	        		notes.push(point);
-	        	}
-	        	else {
-	        		remove_note(point);
-	        		redraw_screen();
-	        	}
-	    }
+          var point = point_detection(x, y);
+          if (point.string != -1)
+            if (is_empty(point)) {
+              draw_point(point);
+              notes.push(point);
+            }
+            else {
+              remove_note(point);
+              redraw_screen();
+            }
+      }
       }, false);
 
     function click_in_neck(x, y) {
-    	return (x > 5 && x < 775 && y > 25 && y < 255);	   // boundary - 5px and 15px
+      return (x > 5 && x < 775 && y > 25 && y < 255);    // boundary - 5px and 15px
     }
 
     function string_detection(x, y) {
-    	var i;
-    	for (i = 0; i < strings_pos.length, y > strings_pos[i]; i++);
+      var i;
+      for (i = 0; i < strings_pos.length, y > strings_pos[i]; i++);
 
-    	// let's assume that we'd detect pressing some string at 15px distance
-    	if (i == 0)
-    		if (Math.abs(y - strings_pos[0]) < 15)
-    			return 0;
-	    if (i == 6)
-	    	if (Math.abs(y - strings_pos[5]) < 15)
-	    		return 5;
+      // let's assume that we'd detect pressing some string at 15px distance
+      if (i == 0)
+        if (Math.abs(y - strings_pos[0]) < 15)
+          return 0;
+      if (i == 6)
+        if (Math.abs(y - strings_pos[5]) < 15)
+          return 5;
 
-    	if (Math.abs(y - strings_pos[i - 1]) < 15)
-    		return i - 1;
-    	if (Math.abs(y - strings_pos[i]) < 15)
-    		return i;
+      if (Math.abs(y - strings_pos[i - 1]) < 15)
+        return i - 1;
+      if (Math.abs(y - strings_pos[i]) < 15)
+        return i;
 
-	    return -1;
+      return -1;
     }
 
     function fret_detection(x, y) {
-    	var i;
-    	for (i = 0; i < frets_x.length, x < frets_x[i]; i++);
-    	return N_frets - i + 1;
+      var i;
+      for (i = 0; i < frets_x.length, x < frets_x[i]; i++);
+      return N_frets - i + 1;
     }
 
     function point_detection(x, y) {
-    	var s = string_detection(x, y);
-    	var f = fret_detection(x, y);
+      var s = string_detection(x, y);
+      var f = fret_detection(x, y);
 
-	    return {'string': s, 'fret': f};
+      return {'string': s, 'fret': f};
     }
 
     function clear_neck() {
-    	notes = [];
+      notes = [];
 
-    	context.clearRect(0, 0, canvas.width, canvas.height);
+      context.clearRect(0, 0, canvas.width, canvas.height);
 
       draw_background();
-    	draw_number();
-    	draw_frets();
+      draw_number();
+      draw_frets();
       draw_all_strings();
       draw_all_dots();
     }
 
     function is_empty(point) {
-    	for (var i = 0; i < notes.length; i++) {
-    		var note = notes[i];
-    		if (note.fret === point.fret && note.string === point.string)
-    			return false;
-    	}
-    	return true;
+      for (var i = 0; i < notes.length; i++) {
+        var note = notes[i];
+        if (note.fret === point.fret && note.string === point.string)
+          return false;
+      }
+      return true;
     }
 
     function remove_note(point) {
-    	for (var i = 0; i < notes.length; i++) {
-    		var note = notes[i];
-    		if (note.fret === point.fret && note.string === point.string) {
-    			notes.splice(i, 1);
-    			return;
-    		}
-    	}
+      for (var i = 0; i < notes.length; i++) {
+        var note = notes[i];
+        if (note.fret === point.fret && note.string === point.string) {
+          notes.splice(i, 1);
+          return;
+        }
+      }
     }
 
     function next() {
-    	str = {};
-    	for (var i = 0; i < notes.length; i++) 
-    		str[notes[i].string] = true;
+      str = {};
+      for (var i = 0; i < notes.length; i++) 
+        str[notes[i].string] = true;
 
-    	frames[iter] = notes;
-    	iter++;
+      frames[iter] = notes;
+      iter++;
 
-    	if (frames[iter])
-    		notes = frames[iter];
-    	else {
-	    	notes = [];
-	    	clear_neck();
-	    	for (var k in str) {
-	    		oscillate(k);
-	    	}
-	    }
+      if (frames[iter])
+        notes = frames[iter];
+      else {
+        notes = [];
+        clear_neck();
+        for (var k in str) {
+          oscillate(k);
+        }
+      }
 
-	    redraw_screen();
-    	// console.log(JSON.stringify(frames));
+      redraw_screen();
+      // console.log(JSON.stringify(frames));
     }
 
 
     function prev() {
-    	frames[iter] = notes;
-    	iter--;
-    	if (iter < 0) {
-    		frames.unshift([]);
-    		iter++;
-    	}
+      frames[iter] = notes;
+      iter--;
+      if (iter < 0) {
+        frames.unshift([]);
+        iter++;
+      }
 
-    	notes = frames[iter];
-    	
-    	redraw_screen();
+      notes = frames[iter];
+      
+      redraw_screen();
     }
 
     </script>
     <br>
-    <button onclick="oscillate(0)">Oscillate first string</button>
-    <button onclick="oscillate(1)">Oscillate second string</button>
-    <button onclick="oscillate(2)">Oscillate third string</button>
-    <button onclick="oscillate(3)">Oscillate fourth string</button>
-    <button onclick="oscillate(4)">Oscillate fifth string</button>
-    <button onclick="oscillate(5)">Oscillate sixth string</button>
-    <button onclick="clear_neck()">Clear neck</button>
     <br>
-    <button onclick="prev()">Prev accord</button>
-    <button onclick="next()">Next accord</button>
+    <button type="button" onclick="prev()" class="btn btn-primary btn-lg" style="position:absolute; left:30%;"><span class="glyphicon glyphicon-chevron-left"></span> </button>
+    <button type="button" onclick="next()" class="btn btn-primary btn-lg" style="position:absolute; left:40%;"><span class="glyphicon glyphicon-chevron-right"></span> </button>
 
   </body>
 </html>
