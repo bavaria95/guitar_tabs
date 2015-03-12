@@ -6,15 +6,19 @@
         margin: 0px;
         padding: 0px;
       }
+      canvas {
+        margin-top: 40px;
+      }
     </style>
   </head>
 
   <body>
-    <canvas id="my_canvas" width="1020" height="400"></canvas>
+
+    <canvas id="my_canvas" width="1020" height="300"></canvas>
 
     <script>
       var N_frets = 22;
-	  var canvas = document.getElementById('my_canvas');
+	    var canvas = document.getElementById('my_canvas');
   	  var context = canvas.getContext('2d');
       var strings_pos = [40, 80, 120, 160, 200, 240];
       var diff_between_strings = 40;
@@ -149,12 +153,26 @@
 
       function draw_number() {
       	context.font="20px Georgia";
-		context.fillText(iter, 25, 30);
+		    context.fillText(iter, 25, 30);
+      }
 
+      function draw_background() {
+
+        var my_gradient = context.createLinearGradient(0, 0, 0, 200);
+        // my_gradient.addColorStop(0, "#47300B");
+        // my_gradient.addColorStop(1, "#F7C24F");
+
+        my_gradient.addColorStop(0, "#632300");
+        my_gradient.addColorStop(0.8, "#E85F15");
+
+        context.fillStyle = my_gradient;
+        context.fillRect(50, 39, 962, 204)
       }
 
       function redraw_screen() {
       	context.clearRect(0, 0, canvas.width, canvas.height);
+
+        draw_background();
 
       	draw_number();
       	draw_frets();
@@ -297,10 +315,12 @@
     	notes = [];
 
     	context.clearRect(0, 0, canvas.width, canvas.height);
+
+      draw_background();
     	draw_number();
     	draw_frets();
-        draw_all_strings();
-        draw_all_dots();
+      draw_all_strings();
+      draw_all_dots();
     }
 
     function is_empty(point) {
